@@ -1,7 +1,8 @@
 # import pandas as pd
+from django.db import transaction
 from django.db.models import F, Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
@@ -56,6 +57,8 @@ def add_product_to_recipe(request, recipe_id, product_id, weight, measure_unit):
             },
         )
 
+    # recipe = get_object_or_404(Recipe, id=recipe_id)
+
     try:
         ingredient = Ingredient.objects.get(pk=product_id)
     except Ingredient.DoesNotExist:
@@ -95,10 +98,11 @@ def add_product_to_recipe(request, recipe_id, product_id, weight, measure_unit):
     try:
         q = Q(recipe=recipe) & Q(ingredient=ingredient)
         # solving race condition with select_for_update()
-        recipe_ingredient = RecipeIngredient.objects.select_for_update().get(q)
-        recipe_ingredient.qty = qty
-        recipe_ingredient.unit = unit
-        recipe_ingredient.save()
+        with transaction.atomic():
+            recipe_ingredient = RecipeIngredient.objects.select_for_update().get(q)
+            recipe_ingredient.qty = qty
+            recipe_ingredient.unit = unit
+            recipe_ingredient.save()
     except RecipeIngredient.DoesNotExist:
         new_recipe_ingredient = RecipeIngredient(
             recipe=recipe,
