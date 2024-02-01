@@ -1,0 +1,92 @@
+<nav class="navbar navbar-expand-sm">
+    <div class="container-fluid justify-content-between px-0">
+        <div class="navbar-brand">
+            <h1>CookBookApp</h1>
+        </div>
+        <div class="bg border border-white rounded">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                        {#                        <li class="nav-item">#}
+                        {#                            {% if request.path == "/files_table/" %}#}
+                        {#                                <a class="nav-link text-success bg-white"#}
+                        {#                                   aria-current="page"#}
+                        {#                                   href="{% url 'files_table' %}"#}
+                        {#                                >#}
+                        {#                                    Files#}
+                        {#                                </a>#}
+                        {#                            {% else %}#}
+                        {#                                <a class="nav-link text-white"#}
+                        {#                                   aria-current="page"#}
+                        {#                                   href="{% url 'files_table' %}"#}
+                        {#                                >#}
+                        {#                                    Files#}
+                        {#                                </a>#}
+                        {#                            {% endif %}#}
+                        {#                        </li>#}
+                        {#                        <li class="nav-item">#}
+                        {#                            {% if request.path == "/upload/" %}#}
+                        {#                                <a class="nav-link text-success bg-white"#}
+                        {#                                   aria-current="page"#}
+                        {#                                   href="{% url 'upload' %}"#}
+                        {#                                >#}
+                        {#                                    Upload File#}
+                        {#                                </a>#}
+                        {#                            {% else %}#}
+                        {#                                <a class="nav-link text-white"#}
+                        {#                                   aria-current="page"#}
+                        {#                                   href="{% url 'upload' %}"#}
+                        {#                                >#}
+                        {#                                    Upload New File#}
+                        {#                                </a>#}
+                        {#                            {% endif %}#}
+                        {#                        </li>#}
+                        <form action="{% url 'users:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary">Logout</button>
+                        </form>
+                    {% else %}
+                        <li class="nav-item">
+                            {% if request.path == "/" %}
+                                <a class="nav-link text-success bg-white"
+                                   aria-current="page"
+                                   href="{% url 'users:login' %}?next={{ 'files/' }}"
+                                >
+                                    Login
+                                </a>
+                            {% else %}
+                                <a class="nav-link text-white"
+                                   aria-current="page"
+                                   href="{% url 'users:login' %}"
+                                >
+                                    Login
+                                </a>
+                            {% endif %}
+                        <li class="nav-item">
+                            {% if request.path == "/register/" %}
+                                <a class="nav-link text-success bg-white"
+                                   aria-current="page"
+                                   href="{% url 'users:register' %}"
+                                >
+                                    Register
+                                </a>
+                            {% else %}
+                                <a class="nav-link text-white"
+                                   aria-current="page"
+                                   href="{% url 'users:register' %}"
+                                >
+                                    Register
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,32 @@
+{% extends "recipes/base.html" %}
+
+{% block main %}
+    <div class="w-50 mx-auto">
+        {% if recipes %}
+            <table>
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Pub_Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for recipe in recipes %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'recipes:detail' recipe.id %}">
+                                {{ recipe.title }}
+                            </a>
+                        </td>
+                        <td>{{ recipe.description }}</td>
+                        <td>{{ recipe.pub_date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No recipes without product available.</p>
+        {% endif %}
+    </div>
+{% endblock %}
