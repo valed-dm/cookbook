@@ -117,11 +117,19 @@ def add_product_to_recipe(request, recipe_id, product_id, weight, measure_unit):
 
 def cook_recipe(request, recipe_id):
     """Increments by 1 for all recipe's ingredients"""
-    ingredients = RecipeIngredient.objects.select_related().filter(recipe_id=recipe_id)
-    for i in ingredients:
-        "'F' expression avoids retrieving the 'times_used' value from the database into Python memory."
-        "It performs the increment operation directly at the database level"
-        Ingredient.objects.filter(id=i.ingredient.id).update(times_used=F("times_used") + 1)
+    ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id)
+    with transaction.atomic():
+        for ing in ingredients:
+            "'F' expression avoids retrieving the 'times_used' value from the database into Python memory."
+            "It performs the increment operation directly at the database level"
+            Ingredient.objects.filter(id=ing.ingredient.id).update(times_used=F("times_used") + 1)
+    # ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id)
+    # products_for_bulk_update = []
+    # for ing in ingredients:
+    #     product = Ingredient.objects.get(id=ing.ingredient.id)
+    #     product.times_used = F("times_used") + 1
+    #     products_for_bulk_update.append(product)
+    # Ingredient.objects.bulk_update(products_for_bulk_update, ["times_used"])
 
     return HttpResponseRedirect(reverse("recipes:detail", args=(recipe_id,)))
 
