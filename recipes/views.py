@@ -95,22 +95,29 @@ def add_product_to_recipe(request, recipe_id, product_id, weight, measure_unit):
             },
         )
 
-    try:
-        q = Q(recipe=recipe) & Q(ingredient=ingredient)
-        # solving race condition with select_for_update()
-        with transaction.atomic():
-            recipe_ingredient = RecipeIngredient.objects.select_for_update().get(q)
-            recipe_ingredient.qty = qty
-            recipe_ingredient.unit = unit
-            recipe_ingredient.save()
-    except RecipeIngredient.DoesNotExist:
-        new_recipe_ingredient = RecipeIngredient(
-            recipe=recipe,
-            unit=unit,
-            qty=qty,
-            ingredient=ingredient
-        )
-        new_recipe_ingredient.save()
+    # try:
+    #     q = Q(recipe=recipe) & Q(ingredient=ingredient)
+    #     # solving race condition with select_for_update()
+    #     with transaction.atomic():
+    #         recipe_ingredient = RecipeIngredient.objects.select_for_update().get(q)
+    #         recipe_ingredient.qty = qty
+    #         recipe_ingredient.unit = unit
+    #         recipe_ingredient.save()
+    # except RecipeIngredient.DoesNotExist:
+    #     new_recipe_ingredient = RecipeIngredient(
+    #         recipe=recipe,
+    #         unit=unit,
+    #         qty=qty,
+    #         ingredient=ingredient
+    #     )
+    #     new_recipe_ingredient.save()
+
+    updated_values = {"unit": unit, "qty": qty}
+
+    obj, created = RecipeIngredient.objects.update_or_create(
+        recipe=recipe, ingredient=ingredient,
+        defaults=updated_values
+    )
 
     return HttpResponseRedirect(reverse("recipes:detail", args=(recipe_id,)))
 
