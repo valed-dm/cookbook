@@ -1,0 +1,13 @@
+{% extends "recipes/base.html" %}
+
+{% block main %}
+    <div class="w-25 mx-auto">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-outline-light">
+                Confirm registration
+            </button>
+        </form>
+    </div>
+{% endblock %}

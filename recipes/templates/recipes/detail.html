@@ -1,0 +1,15 @@
+{% extends "recipes/base.html" %}
+
+{% block main %}
+    <div class="w-100 mx-auto">
+        <h1>{{ recipe_title }}</h1>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <ul>
+            {% for ing in recipeingredient_list %}
+                <li>
+                    {{ ing.ingredient.name }}: {{ ing.qty.amount }} {{ ing.unit.unit }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
